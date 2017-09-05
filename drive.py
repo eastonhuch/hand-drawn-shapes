@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Aug 25 12:51:31 2017
-
+License: MIT
 @author: easton
 """
 

@@ -3,6 +3,8 @@
 """
 Created on Fri Aug 25 12:51:31 2017
 License: MIT
+Adapted from Google's Drive API quickstart: 
+https://developers.google.com/drive/v3/web/quickstart/python
 @author: easton
 """
 

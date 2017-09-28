@@ -6,8 +6,6 @@ License: MIT
 @author: easton
 """
 
-#%cd ~/Documents/Shape Recognition/Drawing App/Draw Shapes/
-
 import drive
 import draw
 

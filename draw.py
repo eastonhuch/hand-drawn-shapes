@@ -10,6 +10,7 @@ import tkinter
 import pandas as pd
 import datetime
 
+finished = False
 b1 = "up"
 points, files = [], []
 xold, yold = None, None
@@ -40,21 +41,31 @@ def mouse_down(event):
     global b1
     b1 = "down"
 
+def save_filename():
+    global shapes, shape_number, name, files
+    timestamp = datetime.datetime.now().strftime(" %m-%d-%Y %H%M%S%f")
+    filename = './Shapes_csv/' + shapes[shape_number] + ' ' + name + timestamp + '.csv'
+    files.append(filename)
+
 def mouse_up(event):
-    global b1, xold, yold, points, drawing_area, num_shapes, shapes, shape_number, shapes_per_category, files, v
+    global b1, xold, yold, points, drawing_area, num_shapes, shapes, shape_number, shapes_per_category, files, v, name, finished
     num_shapes += 1
     drawing_area.delete("all")
     points_df = pd.DataFrame(points, columns=['x','y'])
-    timestamp = datetime.datetime.now().strftime(" %m-%d-%Y %H%M%S%f")
-    filename = './Shapes/' + shapes[shape_number] + ' ' + name + timestamp + '.csv'
-    files.append(filename)
-    points_df.to_csv(filename, index = False)
+    save_filename()
+    points_df.to_csv(files[-1], index = False)
+    if num_shapes >= shapes_per_category:
+        if shape_number >= len(shapes)-1:
+            finished = True 
+            return 
+        else:
+            num_shapes = 0
+            shape_number += 1
     points = []
     b1 = "up"
     xold = None
     yold = None
-    v.set('draw a ' + shapes[shape_number] + ' ' + str(num_shapes) + '/' + str(shapes_per_category))
-
+    v.set('draw a ' + shapes[shape_number] + ' ' + str(num_shapes + 1) + '/' + str(shapes_per_category))
 
 def motion(event):
     if b1 == "down":
@@ -79,12 +90,9 @@ drawing_area.bind("<ButtonRelease-1>", mouse_up)
 def draw():		
     global shapes, shape_number, num_shapes, shapes_per_category, root, v   
     while True:
-    	    if num_shapes >= shapes_per_category:
-    	        num_shapes = 0
-    	        shape_number += 1
-    	        if shape_number >= len(shapes):
-    	            print('you\'re done!')
-    	            root.destroy()
-    	            break	       
-    	    root.update_idletasks()
-    	    root.update()
+        if finished:
+            print('you\'re done!')
+            root.destroy()
+            break	       
+        root.update_idletasks()
+        root.update()

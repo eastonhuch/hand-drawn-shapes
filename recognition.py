@@ -16,7 +16,7 @@ from keras.layers import Dense, Dropout, Flatten, Input
 from keras.layers import Conv2D, MaxPooling2D, BatchNormalization
 
 IMG_SIZE = 28
-subdir = './Shapes'
+subdir = './Shapes_csv'
 features, images, names = points.process_image(subdir, IMG_SIZE)
 
 le = preprocessing.LabelEncoder()
@@ -51,7 +51,7 @@ model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
-model.fit(x_train, y_train, batch_size=32, epochs=2000, verbose=1,
+model.fit(x_train, y_train, batch_size=32, epochs=500, verbose=1,
           validation_data=(x_test, y_test))
 
 # Convolutional neural network with just image input
@@ -119,34 +119,34 @@ model.fit([x_train_i, x_train], [y_train, y_train],
 # Same idea, but using calculated features as primary input
 # This model doesn't do quite as well as the previous one
 
-# Angles and side lengths
-main_input = Input(shape=(18,), name='main_input')
-main = Dense(100, activation='relu')(main_input)
-main = Dense(100, activation='relu')(main)
-main_out = Dropout(0.2)(main)
-aux_output = Dense(num_classes, activation='softmax', name = 'aux_output')(main_out)
-# Image input
-aux_input = Input(shape=(28,28, 1), name='aux_input')
-aux = Conv2D(32, kernel_size=(3, 3), activation='relu')(aux_input)
-aux = Conv2D(32, kernel_size=(3, 3), activation='relu')(aux)
-aux = MaxPooling2D(pool_size=(2,2))(aux)
-aux= Conv2D(64, kernel_size=(3,3), activation='relu')(aux)
-aux= Conv2D(64, kernel_size=(3,3), activation='relu')(aux)
-aux= MaxPooling2D(pool_size=(2,2))(aux)
-aux = Dropout(0.2)(aux)
-aux = Flatten()(aux)
-aux_out = BatchNormalization(name = 'aux_out')(aux)
-# Concatenate secondary input
-main = keras.layers.concatenate([main_out, aux_out])
-# Dense layers
-main = Dense(256, activation='relu')(main)
-main = Dense(128, activation='relu')(main)
-main = Dropout(0.5)(main)
-main_output = Dense(num_classes, activation='softmax', name='main_output')(main)
-# Compile and train
-model = Model(inputs=[main_input, aux_input], outputs=[main_output, aux_output])
-model.compile(optimizer='adadelta', loss='categorical_crossentropy',
-              loss_weights=[1., 0.2], metrics=['accuracy'])
-model.fit([x_train, x_train_i], [y_train, y_train_i],
-          epochs=100, batch_size=32, 
-          validation_data=([x_test, x_test_i], [y_test, y_test_i]))
+## Angles and side lengths
+#main_input = Input(shape=(18,), name='main_input')
+#main = Dense(100, activation='relu')(main_input)
+#main = Dense(100, activation='relu')(main)
+#main_out = Dropout(0.2)(main)
+#aux_output = Dense(num_classes, activation='softmax', name = 'aux_output')(main_out)
+## Image input
+#aux_input = Input(shape=(28,28, 1), name='aux_input')
+#aux = Conv2D(32, kernel_size=(3, 3), activation='relu')(aux_input)
+#aux = Conv2D(32, kernel_size=(3, 3), activation='relu')(aux)
+#aux = MaxPooling2D(pool_size=(2,2))(aux)
+#aux= Conv2D(64, kernel_size=(3,3), activation='relu')(aux)
+#aux= Conv2D(64, kernel_size=(3,3), activation='relu')(aux)
+#aux= MaxPooling2D(pool_size=(2,2))(aux)
+#aux = Dropout(0.2)(aux)
+#aux = Flatten()(aux)
+#aux_out = BatchNormalization(name = 'aux_out')(aux)
+## Concatenate secondary input
+#main = keras.layers.concatenate([main_out, aux_out])
+## Dense layers
+#main = Dense(256, activation='relu')(main)
+#main = Dense(128, activation='relu')(main)
+#main = Dropout(0.5)(main)
+#main_output = Dense(num_classes, activation='softmax', name='main_output')(main)
+## Compile and train
+#model = Model(inputs=[main_input, aux_input], outputs=[main_output, aux_output])
+#model.compile(optimizer='adadelta', loss='categorical_crossentropy',
+#              loss_weights=[1., 0.2], metrics=['accuracy'])
+#model.fit([x_train, x_train_i], [y_train, y_train_i],
+#          epochs=100, batch_size=32, 
+#          validation_data=([x_test, x_test_i], [y_test, y_test_i]))
